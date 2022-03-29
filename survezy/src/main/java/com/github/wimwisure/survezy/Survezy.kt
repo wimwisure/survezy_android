@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.http.SslError
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
@@ -25,7 +26,7 @@ class Survezy(context: Context) {
             R.style.Theme_Design_BottomSheetDialog
         ).also {
             it.setContentView(webView)
-            it.window?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            it.window?.findViewById<View>(R.id.design_bottom_sheet)
                 ?.setBackgroundResource(android.R.color.transparent)
             it.window?.setDimAmount(0.3f)
         }
@@ -48,7 +49,16 @@ class Survezy(context: Context) {
             ): Boolean {
                 val i = Intent(Intent.ACTION_VIEW, request?.url)
                 context.startActivity(i)
-                return true;
+                return true
+            }
+
+            @SuppressLint("WebViewClientOnReceivedSslError")
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                handler?.proceed()
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
